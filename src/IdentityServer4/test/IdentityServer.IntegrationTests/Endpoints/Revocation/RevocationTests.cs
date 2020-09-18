@@ -37,6 +37,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Revocation
                 ClientSecrets = new List<Secret> { new Secret(client_secret.Sha256()) },
                 AllowedGrantTypes = GrantTypes.Code,
                 RequireConsent = false,
+                RequirePkce = false,
                 AllowOfflineAccess = true,
                 AllowedScopes = new List<string> { "api" },
                 RedirectUris = new List<string> { redirect_uri },
@@ -82,18 +83,20 @@ namespace IdentityServer.IntegrationTests.Endpoints.Revocation
                 new IdentityResources.OpenId()
             });
 
-            _mockPipeline.ApiScopes.AddRange(new ApiResource[] {
+            _mockPipeline.ApiResources.AddRange(new ApiResource[] {
                 new ApiResource
                 {
                     Name = "api",
                     ApiSecrets = new List<Secret> { new Secret(scope_secret.Sha256()) },
-                    Scopes =
-                    {
-                        new Scope
-                        {
-                            Name = scope_name
-                        }
-                    }
+                    Scopes = { scope_name }
+                }
+            });
+
+            _mockPipeline.ApiScopes.AddRange(new ApiScope[]
+            {
+                new ApiScope
+                {
+                    Name = scope_name
                 }
             });
 
